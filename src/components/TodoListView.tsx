@@ -3,7 +3,7 @@ import TodoListItem from './TodoListItem';
 
 import { useState, useEffect } from 'react';
 
-function TodoListView({ list }: { list: iTodoItem[] }) {
+function TodoListView({ list, handlerRemoveTodo }: { list: iTodoItem[]; handlerRemoveTodo: () => void }) {
     const [listLenght, setListLenght] = useState(0);
 
     useEffect(() => {
@@ -16,7 +16,7 @@ function TodoListView({ list }: { list: iTodoItem[] }) {
             {listLenght ? (
                 <ul className="list-group">
                     {list.map((item) => (
-                        <TodoListItem key={item.id} item={item} />
+                        <TodoListItem key={item.id} item={item} onRemove={handlerRemoveTodo} />
                     ))}
                 </ul>
             ) : (

@@ -3,7 +3,7 @@ import Footer from './_Footer';
 
 function LayoutDefault({ children }: { children: React.ReactElement }) {
     return (
-        <div className="body-wrapper bg-dark">
+        <div className="body-wrapper bg-dark text-white">
             <Header />
             <main className="main-wrapper">{children}</main>
             <Footer />

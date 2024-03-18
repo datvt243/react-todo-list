@@ -23,11 +23,20 @@ function TodoListWrapper() {
         });
     }, []);
 
+    const handlerRemoveTodo = useCallback((item: iTodoItem): void => {
+        setListToDo((prev): iTodoItem[] => {
+            const id = item.id || '';
+            const _list: iTodoItem[] = prev.filter((i) => i.id !== id);
+            localStorage.setItem(STORAGE_TODO_LIST, JSON.stringify(_list));
+            return _list;
+        });
+    }, []);
+
     return (
         <div className="container py-3">
             <TodoListForm onAddToList={handlerAddToList} />
             <hr />
-            <TodoListView list={listTodo} />
+            <TodoListView list={listTodo} handlerRemoveTodo={handlerRemoveTodo} />
         </div>
     );
 }
