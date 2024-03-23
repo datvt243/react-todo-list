@@ -1,39 +1,24 @@
-interface iDropdowns {
+import React from 'react';
+
+interface iProps {
     text: string;
-    className: string;
-    children?: React.Node;
+    className?: string;
+    directions?: string;
+    children?: React.ReactNode;
 }
 
-/* import { useEffect } from 'react'; */
-function Dropdowns({ text, className = 'btn btn-secondary btn-sm', children }: iDropdowns) {
-    /* const intDropdowns = () => {
-        const dropdownElementList = document.querySelectorAll('.dropdown-toggle');
-        new bootstrap.Dropdown(dropdownElementList);
-    }; */
-
-    /*  useEffect(() => {
-        const myDropdown = document.getElementById('myDropdown');
-        console.log({ myDropdown });
-        myDropdown?.addEventListener('show.bs.dropdown', () => {
-            console.log('1111');
-        });
-
-        return () => {
-            myDropdown?.removeEventListener('show.bs.dropdown', () => {});
-        };
-    }, []); */
-
+function Dropdowns({ text, className, directions, children }: iProps) {
     return (
         <>
-            <div className="btn-group">
+            <div className={['btn-group', directions].join(' ')}>
                 {text && (
-                    <button type="button" className={className}>
+                    <button type="button" className={[className, 'btn btn-secondary btn-sm'].join(' ')}>
                         {text}
                     </button>
                 )}
                 <button
                     type="button"
-                    className={`${className} dropdown-toggle dropdown-toggle-split`}
+                    className={`${className} dropdown-toggle dropdown-toggle-split ${!text && 'rounded'}`}
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                 >

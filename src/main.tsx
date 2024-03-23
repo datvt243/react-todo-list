@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react'; */
 import ReactDOM from 'react-dom/client';
 import App from './App.tsx';
 import './bootstrap/bootstrap.scss';
@@ -16,8 +16,7 @@ import './bootstrap/bootstrap.js';
   app.component(i, v);
 }); */
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-);
+{
+    /* <React.StrictMode> */
+}
+ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
