@@ -14,9 +14,12 @@ export interface iTodoItem {
     title: string;
     description: string;
     isDone: boolean;
+    group: typeFilter;
+    repeat: '' | 'daily' | 'weekly' | 'monthly';
+    deadline: number;
     created_at: number;
     updated_at: null | number;
-    group: typeFilter;
+    deleted_at: null | number;
 }
 export interface iTodoList {
     list: iTodoItem[];

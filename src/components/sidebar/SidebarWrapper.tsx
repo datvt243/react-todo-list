@@ -1,7 +1,7 @@
 import Search from './Search';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faCalendar, faList, faHouseCircleCheck } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faCalendar, faHouseCircleCheck, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
 import type { typeFilter } from '../../types/types';
 import { enumType } from '../../types/types';
 
@@ -11,12 +11,12 @@ interface iProps {
 }
 function SidebarWrapper({ filter, onFilter }: iProps) {
     const listSidebar = [
-        { text: 'Tất cả', icon: faList, iconClass: 'text-primary', group: enumType.BLANK },
+        { text: 'Tasks', icon: faHouseCircleCheck, iconClass: 'text-primary', group: enumType.BLANK },
         { text: 'Quan trọng', icon: faStar, iconClass: 'text-warning', group: enumType.IMPORTANT },
         { text: 'Kế hoạch', icon: faCalendar, iconClass: 'text-info', group: enumType.PLANNED },
-        { text: 'Tasks', icon: faHouseCircleCheck, iconClass: 'text-success', group: enumType.TASKS },
+        { text: 'Đã hoàn thành', icon: faCheck, iconClass: 'text-success', group: 'success' },
+        { text: 'Đã xoá', icon: faTrash, iconClass: 'text-danger', group: 'delete' },
     ];
-
     return (
         <div className="sidebar-wapper py-3">
             <div className="mb-3">

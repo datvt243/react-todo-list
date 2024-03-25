@@ -8,8 +8,17 @@ interface iProps {
     filter: typeFilter;
     handlerRemoveTodo: (id: string) => void;
     handlerMarkAsImportant: (id: string, type: typeFilter) => void;
+    handlerMarkAsDone: (id: string) => void;
+    handlerUpdateTodoRecord: (record: iTodoItem) => void;
 }
-function TodoListView({ list, filter, handlerRemoveTodo, handlerMarkAsImportant }: iProps) {
+function TodoListView({
+    list,
+    filter,
+    handlerRemoveTodo,
+    handlerMarkAsImportant,
+    handlerUpdateTodoRecord,
+    handlerMarkAsDone,
+}: iProps) {
     const [listLenght, setListLenght] = useState(0);
 
     useEffect(() => {
@@ -26,7 +35,9 @@ function TodoListView({ list, filter, handlerRemoveTodo, handlerMarkAsImportant 
                             key={item.id}
                             item={item}
                             onRemove={handlerRemoveTodo}
-                            onMaskAsImportant={handlerMarkAsImportant}
+                            onMarkAsImportant={handlerMarkAsImportant}
+                            onUpdateTodoRecord={handlerUpdateTodoRecord}
+                            onMarkAsDone={handlerMarkAsDone}
                         />
                     ))}
                 </ul>

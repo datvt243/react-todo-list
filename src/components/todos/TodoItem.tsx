@@ -1,40 +1,88 @@
 import type { iTodoItem, typeFilter } from '../../types/types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faXmark, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faStar, faXmark, faPenToSquare, faRepeat } from '@fortawesome/free-solid-svg-icons';
 import Dropdowns from '../bases/Dropdowns';
 
 interface iProps {
     item: iTodoItem;
     onRemove: (id: string) => void;
-    onMaskAsImportant: (id: string, type: typeFilter) => void;
+    onMarkAsImportant: (id: string, type: typeFilter) => void;
+    onMarkAsDone: (id: string) => void;
+    onUpdateTodoRecord: (record: iTodoItem) => void;
 }
-function TodoListItem({ item, onRemove, onMaskAsImportant }: iProps) {
+function TodoListItem({ item, onRemove, onMarkAsImportant, onUpdateTodoRecord, onMarkAsDone }: iProps) {
     return (
         <li className="list-group-item">
             <div className="d-flex align-items-center">
                 <div className="flex-grow-1">
-                    <p className="mb-0">{item.title}</p>
+                    <div className="d-flex">
+                        <div className="col-auto pe-2" style={{ marginTop: '2px' }}>
+                            <input
+                                className={['form-check-input'].join(' ')}
+                                type="checkbox"
+                                value=""
+                                id={item.id}
+                                checked={item.isDone}
+                                onChange={() => {
+                                    onMarkAsDone(item.id);
+                                }}
+                                disabled={!!item.deleted_at}
+                            />
+                        </div>
+                        <div className="col-auto flex-grow-1">
+                            <p className="mb-0">
+                                <span className={item.isDone === true ? 'text-decoration-line-through' : ''}>{item.title}</span>
+                                {item.deleted_at && <span className="small opacity-75 text-danger px-2">deleted</span>}
+                            </p>
+                            {item.description && <p className="small mb-0 opacity-50">{item.description}</p>}
+                            {item.repeat && (
+                                <p className="small mb-0 opacity-50">{new Date(item.deadline).toLocaleDateString()}</p>
+                            )}
+                        </div>
+                    </div>
+                    {/* <p>{JSON.stringify(item)}</p> */}
                 </div>
                 <div>
-                    <div className="d-flex">
+                    <div className="d-flex" style={{ marginTop: '4px' }}>
                         <div className="col-auto">
-                            <span
-                                className="d-inline-block cursor-pointer"
-                                onClick={() => {
-                                    onMaskAsImportant(item.id, item.group);
-                                }}
-                            >
-                                <FontAwesomeIcon
-                                    icon={faStar}
-                                    className={['important'].includes(item.group) ? 'opacity-100 text-warning' : 'opacity-25'}
-                                />
-                            </span>
+                            <div className="row align-items-end">
+                                {item.repeat && (
+                                    <div className="col-auto opacity-75">
+                                        <FontAwesomeIcon icon={faRepeat} />
+                                        <span className="ps-2">{item.repeat}</span>
+                                    </div>
+                                )}
+
+                                <div className="col-auto">
+                                    <span
+                                        className="d-inline-block cursor-pointer"
+                                        onClick={() => {
+                                            onMarkAsImportant(item.id, item.group);
+                                        }}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faStar}
+                                            className={
+                                                ['important'].includes(item.group) ? 'opacity-100 text-warning' : 'opacity-25'
+                                            }
+                                        />
+                                    </span>
+                                </div>
+                            </div>
                         </div>
                         <div className="col-auto ps-3">
                             <Dropdowns text="">
                                 <li>
-                                    <a className="dropdown-item disabled" href="#">
+                                    <a
+                                        className="dropdown-item"
+                                        href="#"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#refModalUpdate"
+                                        onClick={() => {
+                                            onUpdateTodoRecord(item);
+                                        }}
+                                    >
                                         <span className="badge-icon">
                                             <FontAwesomeIcon icon={faPenToSquare} className="text-warning" />
                                         </span>

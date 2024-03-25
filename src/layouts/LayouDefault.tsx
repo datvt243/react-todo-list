@@ -8,7 +8,7 @@ interface iProps {
 }
 function LayoutDefault({ onSetTheme, theme, children }: iProps) {
     return (
-        <div className="body-wrapper">
+        <div className="body-wrapper" id="body-wrapper">
             <Header theme={theme} onSetTheme={onSetTheme} />
             <main className="main-wrapper">{children}</main>
             <Footer />

@@ -19,10 +19,39 @@ function TodoListForm({ filter, onAddToList }: iProps) {
             group: filter || '',
             title: string,
             description: '',
+            repeat: filter === 'planned' ? 'daily' : '',
             isDone: false,
             created_at: +new Date(),
             updated_at: null,
         };
+
+        /* deadline */
+        newItem.repeat &&
+            ((repeat) => {
+                newItem.group = 'planned';
+
+                const _date = new Date();
+
+                switch (repeat) {
+                    case 'daily':
+                        _date.setDate(_date.getDate() + 1);
+                        _date.setHours(23, 59, 59, 999);
+                        newItem.deadline = _date;
+                        break;
+                    /* case 'weekly':
+                    _date.setDate(date.getDate() + 7);
+                    _date.setHours(23, 59, 59, 999);
+                    newItem.deadline = _date
+                    break; */
+                    default:
+                        break;
+                }
+
+                /* const date = new Date();
+                date.setDate(date.getDate() + 1);
+                date.setHours(23, 59, 59, 999); */
+            })(newItem.repeat);
+
         onAddToList(newItem);
         setString('');
     };
