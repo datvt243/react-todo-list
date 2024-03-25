@@ -2,21 +2,14 @@ import TodoForm from './TodoForm';
 import TodoView from './TodoView';
 import ToDoUpdate from './ToDoUpdate';
 import Modal from '../bases/Modal';
+
 import type { iTodoItem, typeFilter } from '../../types/types';
+import { initialRecordState } from '../../composables/Todo.ts';
 
 import { useState, useCallback, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const STORAGE_TODO_LIST = 'STORAGE_TODO_LIST';
-const initialRecordState: iTodoItem = {
-    id: '',
-    title: '',
-    description: '',
-    isDone: false,
-    created_at: +new Date(),
-    updated_at: null,
-    group: '',
-};
 
 interface iProps {
     filter: typeFilter;
@@ -79,7 +72,18 @@ function TodoListWrapper({ filter }: iProps) {
         if (!recordId) return;
 
         setListToDo((prev) => {
-            let flagRepeat: iTodoItem | Record<string, never> = {};
+            let flagRepeat: iTodoItem = {
+                id: '',
+                title: '',
+                description: '',
+                isDone: false,
+                group: '',
+                repeat: '',
+                deadline: +new Date(),
+                created_at: +new Date(),
+                updated_at: null,
+                deleted_at: null,
+            };
             const _list: iTodoItem[] = prev.map((record) => {
                 if (record.id === recordId) {
                     record.repeat && (flagRepeat = { ...record });
@@ -89,7 +93,7 @@ function TodoListWrapper({ filter }: iProps) {
             });
 
             /* repeat */
-            if (Object.keys(flagRepeat).length) {
+            if (flagRepeat.id) {
                 const date = new Date(flagRepeat.created_at);
                 date.setDate(date.getDate() + 1);
                 date.setHours(23, 59, 59, 999);
@@ -128,7 +132,7 @@ function TodoListWrapper({ filter }: iProps) {
     const [listFilter, setListFilter] = useState<iTodoItem[]>([]);
     useEffect(() => {
         setListFilter(() => {
-            if (filter == 'success') {
+            if (filter === 'success') {
                 return listTodo.filter((i) => i.isDone === true);
             } else if (filter === 'delete') {
                 return listTodo.filter((i) => i.deleted_at !== undefined);

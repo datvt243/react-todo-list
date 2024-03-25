@@ -14,8 +14,8 @@ function SidebarWrapper({ filter, onFilter }: iProps) {
         { text: 'Tasks', icon: faHouseCircleCheck, iconClass: 'text-primary', group: enumType.BLANK },
         { text: 'Quan trọng', icon: faStar, iconClass: 'text-warning', group: enumType.IMPORTANT },
         { text: 'Kế hoạch', icon: faCalendar, iconClass: 'text-info', group: enumType.PLANNED },
-        { text: 'Đã hoàn thành', icon: faCheck, iconClass: 'text-success', group: 'success' },
-        { text: 'Đã xoá', icon: faTrash, iconClass: 'text-danger', group: 'delete' },
+        { text: 'Đã hoàn thành', icon: faCheck, iconClass: 'text-success', group: enumType.SUCCESS },
+        { text: 'Đã xoá', icon: faTrash, iconClass: 'text-danger', group: enumType.DELETE },
     ];
     return (
         <div className="sidebar-wapper py-3">

@@ -3,7 +3,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 interface iProps {
     id: string;
-    title: string;
+    title?: string;
     backdrop?: string;
     children?: React.ReactNode;
 }
@@ -12,7 +12,7 @@ function Modal({ id, title = 'Chỉnh sửa', backdrop = 'static', children }: i
         <div
             className="modal fade"
             id={id}
-            tabIndex="-1"
+            tabIndex={-1}
             data-bs-backdrop={backdrop || 'static'}
             data-bs-keyboard="false"
             aria-labelledby={`${id}Label`}
@@ -24,7 +24,7 @@ function Modal({ id, title = 'Chỉnh sửa', backdrop = 'static', children }: i
                         <p className="modal-title fs-5" id={`${id}Label`}>
                             {title}
                         </p>
-                        <span type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span className="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             <FontAwesomeIcon icon={faXmark} />
                         </span>
                     </div>

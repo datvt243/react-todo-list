@@ -1,24 +1,20 @@
 import { iTodoItem } from '../../types/types';
+/* import type { typeRepeat } from '../../types/types'; */
+import { initialRecordState } from '../../composables/Todo.ts';
+
 interface iProps {
     record: iTodoItem;
     handlerUpdateToDoById: (record: iTodoItem) => void;
 }
-const initialRecordState: iTodoItem = {
-    id: '',
-    title: '',
-    description: '',
-    isDone: false,
-    created_at: +new Date(),
-    updated_at: null,
-    group: '',
-};
 
 import { useState, useEffect } from 'react';
 function ToDoUpdate({ record = initialRecordState, handlerUpdateToDoById }: iProps) {
     const [todo, setTodo] = useState<iTodoItem>(initialRecordState);
+
     useEffect(() => {
         setTodo(record);
     }, [record]);
+
     return (
         <div className="htmlForm-wrapper">
             <form action="">
@@ -40,7 +36,6 @@ function ToDoUpdate({ record = initialRecordState, handlerUpdateToDoById }: iPro
                     <textarea
                         className="form-control"
                         id="description"
-                        rows="3"
                         value={todo.description}
                         onChange={(e) => {
                             setTodo({ ...todo, description: e.target.value });
@@ -56,13 +51,19 @@ function ToDoUpdate({ record = initialRecordState, handlerUpdateToDoById }: iPro
                         className="form-select"
                         value={todo.repeat}
                         onChange={(e) => {
-                            setTodo({ ...todo, repeat: e.target.value });
+                            const _val = e.target.value;
+                            setTodo({ ...todo, repeat: _val });
+                            /* const _val: typeRepeat = e.target.value | '';
+                            if (['', 'daily', 'weekly', 'monthly'].includes(_val)) {
+                                todo.repeat = _val;
+                                setTodo({ ...todo, repeat: e.target.value });
+                            } */
                         }}
                     >
-                        <option value="">Không</option>
+                        <option value="none">Không</option>
                         <option value="daily">Mỗi ngày</option>
-                        {/* <option value="weekly">Mỗi tuần</option>
-                        <option value="monthly">Mỗi tháng</option> */}
+                        <option value="weekly">Mỗi tuần</option>
+                        <option value="monthly">Mỗi tháng</option>
                     </select>
                 </div>
                 <div className="text-right mt-3">

@@ -22,7 +22,7 @@ function TodoListForm({ filter, onAddToList }: iProps) {
             repeat: filter === 'planned' ? 'daily' : '',
             isDone: false,
             created_at: +new Date(),
-            updated_at: null,
+            deadline: +new Date(),
         };
 
         /* deadline */
@@ -36,7 +36,7 @@ function TodoListForm({ filter, onAddToList }: iProps) {
                     case 'daily':
                         _date.setDate(_date.getDate() + 1);
                         _date.setHours(23, 59, 59, 999);
-                        newItem.deadline = _date;
+                        newItem.deadline = +_date;
                         break;
                     /* case 'weekly':
                     _date.setDate(date.getDate() + 7);
@@ -46,10 +46,6 @@ function TodoListForm({ filter, onAddToList }: iProps) {
                     default:
                         break;
                 }
-
-                /* const date = new Date();
-                date.setDate(date.getDate() + 1);
-                date.setHours(23, 59, 59, 999); */
             })(newItem.repeat);
 
         onAddToList(newItem);
