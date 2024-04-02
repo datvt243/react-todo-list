@@ -1,8 +1,8 @@
 import type { iTodoItem, typeFilter } from '../../types/types';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faXmark, faPenToSquare, faRepeat } from '@fortawesome/free-solid-svg-icons';
-import Dropdowns from '../bases/Dropdowns';
+import { faStar, faXmark, faTrash, faPenToSquare, faRepeat } from '@fortawesome/free-solid-svg-icons';
+import ReactDropdown from '../bases/ReactDropdown';
 
 interface iProps {
     item: iTodoItem;
@@ -10,8 +10,9 @@ interface iProps {
     onMarkAsImportant: (id: string, type: typeFilter) => void;
     onMarkAsDone: (id: string) => void;
     onUpdateTodoRecord: (record: iTodoItem) => void;
+    onDelete: (id: string) => void;
 }
-function TodoListItem({ item, onRemove, onMarkAsImportant, onUpdateTodoRecord, onMarkAsDone }: iProps) {
+function TodoListItem({ item, onRemove, onMarkAsImportant, onUpdateTodoRecord, onMarkAsDone, onDelete }: iProps) {
     return (
         <li className="list-group-item">
             <div className="d-flex align-items-center">
@@ -72,7 +73,7 @@ function TodoListItem({ item, onRemove, onMarkAsImportant, onUpdateTodoRecord, o
                             </div>
                         </div>
                         <div className="col-auto ps-3">
-                            <Dropdowns text="">
+                            <ReactDropdown text="">
                                 <li>
                                     <a
                                         className="dropdown-item"
@@ -92,21 +93,40 @@ function TodoListItem({ item, onRemove, onMarkAsImportant, onUpdateTodoRecord, o
                                 <li>
                                     <hr className="dropdown-divider" />
                                 </li>
-                                <li>
-                                    <a
-                                        className="dropdown-item"
-                                        href="#"
-                                        onClick={() => {
-                                            onRemove(item.id);
-                                        }}
-                                    >
-                                        <span className="badge-icon">
-                                            <FontAwesomeIcon icon={faXmark} className="text-danger" />
-                                        </span>
-                                        Xoá
-                                    </a>
-                                </li>
-                            </Dropdowns>
+                                {(!item.deleted_at || item.deleted_at === null) && (
+                                    <li>
+                                        <a
+                                            className="dropdown-item"
+                                            href="#"
+                                            onClick={() => {
+                                                onRemove(item.id);
+                                            }}
+                                        >
+                                            <span className="badge-icon">
+                                                <FontAwesomeIcon icon={faTrash} className="text-danger" />
+                                            </span>
+                                            Cho vào thùng rác
+                                        </a>
+                                    </li>
+                                )}
+
+                                {item.deleted_at && item.deleted_at !== null && (
+                                    <li>
+                                        <a
+                                            className="dropdown-item"
+                                            href="#"
+                                            onClick={() => {
+                                                onDelete(item.id);
+                                            }}
+                                        >
+                                            <span className="badge-icon">
+                                                <FontAwesomeIcon icon={faXmark} className="text-danger" />
+                                            </span>
+                                            Xoá
+                                        </a>
+                                    </li>
+                                )}
+                            </ReactDropdown>
                         </div>
                     </div>
                 </div>

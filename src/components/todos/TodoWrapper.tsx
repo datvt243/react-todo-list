@@ -1,13 +1,23 @@
 import TodoForm from './TodoForm';
 import TodoView from './TodoView';
 import ToDoUpdate from './ToDoUpdate';
-import Modal from '../bases/Modal';
+import ReactModal from '../bases/ReactModal';
+import ReactToast from '../bases/ReactToast';
 
 import type { iTodoItem, typeFilter } from '../../types/types';
 import { initialRecordState } from '../../composables/Todo.ts';
 
-import { useState, useCallback, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+import { useState, useCallback, useEffect, useRef } from 'react';
+
+import { recordTodo } from '../../models/todoModel.ts';
+import {
+    todoAddNew,
+    todoDelete,
+    todoUpdateRecordById,
+    todoMoveToTrash,
+    todoMaskAsImportant,
+    todoRepeat,
+} from '../../controllers/toDoController.ts';
 
 const STORAGE_TODO_LIST = 'STORAGE_TODO_LIST';
 
@@ -17,6 +27,8 @@ interface iProps {
 function TodoListWrapper({ filter }: iProps) {
     const [listTodo, setListToDo] = useState<iTodoItem[]>([]);
     const [recordUpdate, setRecordUpdate] = useState<iTodoItem>(initialRecordState);
+
+    const refReactToast = useRef();
 
     useEffect(() => {
         const storage: string | null = localStorage.getItem(STORAGE_TODO_LIST);
@@ -29,111 +41,82 @@ function TodoListWrapper({ filter }: iProps) {
         localStorage.setItem(STORAGE_TODO_LIST, JSON.stringify(_list));
     };
 
-    /* Add to List */
-    const handlerAddToList = useCallback((item: iTodoItem): void => {
-        setListToDo((prev): iTodoItem[] => {
-            const _list: iTodoItem[] = [item, ...prev];
-            handlerLocalStorage(_list);
-            return _list;
-        });
+    /**
+     * Thêm mới record
+     */
+    const handlerAddToList = useCallback((record: iTodoItem): void => {
+        setListToDo((prev): iTodoItem[] => todoAddNew(record, [...prev]));
     }, []);
 
-    /* Remove from list */
+    /**
+     * Cho vào thùng rác
+     */
     const handlerRemoveTodo = useCallback((id: string): void => {
         if (confirm('Bạn chắc là muốn xoá')) {
-            setListToDo((prev): iTodoItem[] => {
-                /* const _list: iTodoItem[] = prev.filter((i) => i.id !== id); */
-                const _list: iTodoItem[] = prev.map((i) => {
-                    if (i.id === id) {
-                        i.deleted_at = +new Date();
-                    }
-                    return i;
-                });
-                handlerLocalStorage(_list);
-                return _list;
-            });
+            setListToDo((prev): iTodoItem[] => todoMoveToTrash(id, [...prev]));
         }
     }, []);
 
     const handlerMarkAsImportant = useCallback((recordId: string, group: typeFilter): void => {
         if (!recordId) return;
-
         const _group = group === 'important' ? '' : 'important';
-
-        setListToDo((prev) => {
-            const _list: iTodoItem[] = prev.map((record) => {
-                return record.id === recordId ? { ...record, ...{ group: _group } } : record;
-            });
-            handlerLocalStorage(_list);
-            return _list;
-        });
+        setListToDo((prev) => todoMaskAsImportant(recordId, _group, [...prev]));
     }, []);
-    const handlerMarkAsDone = useCallback((recordId: string): void => {
-        if (!recordId) return;
+    const handlerMarkAsDone = useCallback(
+        (recordId: string): void => {
+            if (!recordId) return;
 
-        setListToDo((prev) => {
-            let flagRepeat: iTodoItem = {
-                id: '',
-                title: '',
-                description: '',
-                isDone: false,
-                group: '',
-                repeat: '',
-                deadline: +new Date(),
-                created_at: +new Date(),
-                updated_at: null,
-                deleted_at: null,
-            };
-            const _list: iTodoItem[] = prev.map((record) => {
-                if (record.id === recordId) {
-                    record.repeat && (flagRepeat = { ...record });
-                    return { ...record, ...{ isDone: !record.isDone } };
-                }
-                return record;
+            let flagRepeat: iTodoItem = { ...recordTodo };
+
+            setListToDo((prev) => {
+                const _list: iTodoItem[] = prev.map((record) => {
+                    if (record.id === recordId) {
+                        record.repeat && (flagRepeat = { ...record });
+                        return { ...record, ...{ isDone: !record.isDone } };
+                    }
+                    return record;
+                });
+
+                handlerLocalStorage(_list);
+                return _list;
             });
 
-            /* repeat */
+            /** repeat todo record */
             if (flagRepeat.id) {
-                const date = new Date(flagRepeat.created_at);
-                date.setDate(date.getDate() + 1);
-                date.setHours(23, 59, 59, 999);
-
-                flagRepeat.id = uuidv4();
-                flagRepeat.deadline = +date;
-                flagRepeat.created_at = +new Date();
-
-                _list.push(flagRepeat);
+                setTimeout(() => {
+                    const newRecord: iTodoItem = todoRepeat({ ...flagRepeat });
+                    setListToDo((prev) => todoAddNew({ ...newRecord }, [...prev]));
+                    refReactToast.current.show();
+                }, 1000);
             }
-
-            handlerLocalStorage(_list);
-            return _list;
-        });
-    }, []);
+        },
+        [listTodo],
+    );
 
     const handlerUpdateTodoRecord = useCallback((record: iTodoItem): void => {
         setRecordUpdate(record);
     }, []);
 
+    /**
+     * Cập nhật record [edit]
+     */
     const handlerUpdateToDoById = useCallback((record: iTodoItem): void => {
         if (!record.id) return;
-        setListToDo((prev) => {
-            const _list = prev.map((r) => {
-                if (r.id === record.id) {
-                    record.repeat && (record.group = 'planned');
-                    return record;
-                }
-                return r;
-            });
-            handlerLocalStorage(_list);
-            return _list;
-        });
+        setListToDo((prev) => todoUpdateRecordById(record, [...prev]));
+    }, []);
+
+    /**
+     * Xoá vĩnh viễn
+     */
+    const handlerDelete = useCallback((id: string) => {
+        setListToDo((prev) => todoDelete(id, [...prev]));
     }, []);
 
     const [listFilter, setListFilter] = useState<iTodoItem[]>([]);
     useEffect(() => {
         setListFilter(() => {
             if (filter === 'success') {
-                return listTodo.filter((i) => i.isDone === true);
+                return listTodo.filter((i) => (i.isDone === true && !i.deleted_at) || i.deleted_at === null);
             } else if (filter === 'delete') {
                 return listTodo.filter((i) => i.deleted_at !== undefined);
             } else {
@@ -154,12 +137,14 @@ function TodoListWrapper({ filter }: iProps) {
                 handlerMarkAsImportant={handlerMarkAsImportant}
                 handlerMarkAsDone={handlerMarkAsDone}
                 handlerUpdateTodoRecord={handlerUpdateTodoRecord}
+                handlerDelete={handlerDelete}
             />
             {true && (
-                <Modal id="refModalUpdate">
+                <ReactModal id="refModalUpdate">
                     <ToDoUpdate record={recordUpdate} handlerUpdateToDoById={handlerUpdateToDoById} />
-                </Modal>
+                </ReactModal>
             )}
+            <ReactToast ref={refReactToast} text={'Task (Daily) đã được tự động tạo lại thành công'} />
         </div>
     );
 }

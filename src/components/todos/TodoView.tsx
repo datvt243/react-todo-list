@@ -9,6 +9,7 @@ interface iProps {
     handlerRemoveTodo: (id: string) => void;
     handlerMarkAsImportant: (id: string, type: typeFilter) => void;
     handlerMarkAsDone: (id: string) => void;
+    handlerDelete: (id: string) => void;
     handlerUpdateTodoRecord: (record: iTodoItem) => void;
 }
 function TodoListView({
@@ -18,6 +19,7 @@ function TodoListView({
     handlerMarkAsImportant,
     handlerUpdateTodoRecord,
     handlerMarkAsDone,
+    handlerDelete,
 }: iProps) {
     const [listLenght, setListLenght] = useState(0);
 
@@ -38,6 +40,7 @@ function TodoListView({
                             onMarkAsImportant={handlerMarkAsImportant}
                             onUpdateTodoRecord={handlerUpdateTodoRecord}
                             onMarkAsDone={handlerMarkAsDone}
+                            onDelete={handlerDelete}
                         />
                     ))}
                 </ul>

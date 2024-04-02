@@ -7,7 +7,7 @@ interface iProps {
     backdrop?: string;
     children?: React.ReactNode;
 }
-function Modal({ id, title = 'Chỉnh sửa', backdrop = 'static', children }: iProps) {
+function ReactModal({ id, title = 'Chỉnh sửa', backdrop = 'static', children }: iProps) {
     return (
         <div
             className="modal fade"
@@ -40,4 +40,4 @@ function Modal({ id, title = 'Chỉnh sửa', backdrop = 'static', children }: i
     );
 }
 
-export default Modal;
+export default ReactModal;
