@@ -8,7 +8,7 @@ interface iProps {
 }
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
-function ReactToast({ id, text }: iProps, ref: React.ReactNode) {
+function ReactToast({ id, text }: iProps, ref: any) {
     //
     const [toastsId, setToastsId] = useState(() => {
         return id ? id : createRandomId();
