@@ -38,7 +38,9 @@ function TodoListItem({ item, onRemove, onMarkAsImportant, onUpdateTodoRecord, o
                             </p>
                             {item.description && <p className="small mb-0 opacity-50">{item.description}</p>}
                             {item.repeat && (
-                                <p className="small mb-0 opacity-50">{new Date(item.deadline).toLocaleDateString()}</p>
+                                <p className={`small mb-0 opacity-50 ${item.deadline > +new Date() ? 'text-danger' : ''}`}>
+                                    {new Date(item.deadline).toLocaleDateString()}
+                                </p>
                             )}
                         </div>
                     </div>

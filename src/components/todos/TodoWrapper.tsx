@@ -28,7 +28,9 @@ function TodoListWrapper({ filter }: iProps) {
     const [listTodo, setListToDo] = useState<iTodoItem[]>([]);
     const [recordUpdate, setRecordUpdate] = useState<iTodoItem>(initialRecordState);
 
-    const refReactToast = useRef();
+    const refReactToast = useRef<{
+        show: () => void;
+    }>();
 
     useEffect(() => {
         const storage: string | null = localStorage.getItem(STORAGE_TODO_LIST);
@@ -62,36 +64,33 @@ function TodoListWrapper({ filter }: iProps) {
         const _group = group === 'important' ? '' : 'important';
         setListToDo((prev) => todoMaskAsImportant(recordId, _group, [...prev]));
     }, []);
-    const handlerMarkAsDone = useCallback(
-        (recordId: string): void => {
-            if (!recordId) return;
+    const handlerMarkAsDone = useCallback((recordId: string): void => {
+        if (!recordId) return;
 
-            let flagRepeat: iTodoItem = { ...recordTodo };
+        let flagRepeat: iTodoItem = { ...recordTodo };
 
-            setListToDo((prev) => {
-                const _list: iTodoItem[] = prev.map((record) => {
-                    if (record.id === recordId) {
-                        record.repeat && (flagRepeat = { ...record });
-                        return { ...record, ...{ isDone: !record.isDone } };
-                    }
-                    return record;
-                });
-
-                handlerLocalStorage(_list);
-                return _list;
+        setListToDo((prev) => {
+            const _list: iTodoItem[] = prev.map((record) => {
+                if (record.id === recordId) {
+                    record.repeat && (flagRepeat = { ...record });
+                    return { ...record, ...{ isDone: !record.isDone } };
+                }
+                return record;
             });
 
-            /** repeat todo record */
-            if (flagRepeat.id) {
-                setTimeout(() => {
-                    const newRecord: iTodoItem = todoRepeat({ ...flagRepeat });
-                    setListToDo((prev) => todoAddNew({ ...newRecord }, [...prev]));
-                    refReactToast.current.show();
-                }, 1000);
-            }
-        },
-        [listTodo],
-    );
+            handlerLocalStorage(_list);
+            return _list;
+        });
+
+        /** repeat todo record */
+        if (flagRepeat.id) {
+            setTimeout(() => {
+                const newRecord: iTodoItem = todoRepeat({ ...flagRepeat });
+                setListToDo((prev) => todoAddNew({ ...newRecord }, [...prev]));
+                refReactToast?.current?.show();
+            }, 1000);
+        }
+    }, []);
 
     const handlerUpdateTodoRecord = useCallback((record: iTodoItem): void => {
         setRecordUpdate(record);

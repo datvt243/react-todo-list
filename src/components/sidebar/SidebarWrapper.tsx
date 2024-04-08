@@ -1,4 +1,4 @@
-import Search from './Search';
+/* import Search from './Search'; */
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faCalendar, faHouseCircleCheck, faCheck, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -19,11 +19,11 @@ function SidebarWrapper({ filter, onFilter }: iProps) {
     ];
     return (
         <div className="sidebar-wapper py-3">
-            <div className="mb-3">
+            {/* <div className="mb-3">
                 <Search />
-            </div>
+            </div> */}
 
-            <div className="my-3">
+            <div className="my-2">
                 <p className="h4 text-uppercase">Danh sách</p>
                 <ul className="list-group list-group-sm list-group-flush">
                     {listSidebar.map((el, idx) => {

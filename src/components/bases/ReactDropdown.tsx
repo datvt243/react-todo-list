@@ -14,13 +14,16 @@ function ReactDropdown({ text, className = '', directions, children }: iProps) {
         return createRandomId();
     });
 
-    const [elmBootstrap, setElmBootstrap] = useState(null);
+    const [elmBootstrap, setElmBootstrap] = useState<{
+        toggle: () => void;
+    } | null>(null);
 
     useEffect(() => {
         setElmBootstrap(() => {
-            return new Dropdown(document.getElementById(dropdownId));
+            const elm: HTMLElement | null = document.getElementById(dropdownId);
+            return elm ? new Dropdown(elm) : null;
         });
-    }, []);
+    }, [dropdownId]);
     function createRandomId() {
         return 'Dropdown_' + uuidv4();
     }
@@ -39,7 +42,7 @@ function ReactDropdown({ text, className = '', directions, children }: iProps) {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
                 onClick={() => {
-                    elmBootstrap.toggle();
+                    elmBootstrap?.toggle();
                 }}
             >
                 <span className="visually-hidden">x</span>

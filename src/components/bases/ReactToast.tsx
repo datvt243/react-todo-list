@@ -3,18 +3,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 interface iProps {
-    id: string;
+    id?: string;
     text: string;
 }
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect, useImperativeHandle, forwardRef } from 'react';
-function ReactToast({ id, text }: iProps, ref) {
+function ReactToast({ id, text }: iProps, ref: React.ReactNode) {
     //
     const [toastsId, setToastsId] = useState(() => {
         return id ? id : createRandomId();
     });
 
-    const [toastBootstrap, setToastBootstrap] = useState(null);
+    const [toastBootstrap, setToastBootstrap] = useState<{
+        show: () => void;
+        hide: () => void;
+    } | null>(null);
 
     useEffect(() => {
         if (id) {
@@ -22,32 +25,32 @@ function ReactToast({ id, text }: iProps, ref) {
         }
 
         setToastBootstrap(() => {
-            const toastElm = document.getElementById(toastsId);
-            return Toast.getOrCreateInstance(toastElm);
+            const toastElm: HTMLElement | null = document.getElementById(toastsId);
+            return toastElm ? Toast.getOrCreateInstance(toastElm) : null;
         });
 
         /* const toastBootstrap = Toast.getOrCreateInstance(toastsId); */
-    }, []);
+    }, [id, toastsId]);
 
     useImperativeHandle(ref, () => {
         return {
-            show() {
+            show(): void {
                 handlerShow();
             },
-            hide() {
+            hide(): void {
                 handlerClose();
             },
         };
     });
 
-    function createRandomId() {
+    function createRandomId(): string {
         return 'Toasts_' + uuidv4();
     }
-    function handlerShow() {
-        toastBootstrap.show();
+    function handlerShow(): void {
+        toastBootstrap?.show();
     }
-    function handlerClose() {
-        toastBootstrap.hide();
+    function handlerClose(): void {
+        toastBootstrap?.hide();
     }
 
     return (

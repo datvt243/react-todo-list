@@ -1,4 +1,4 @@
-import type { iTodoItem } from '../types/types.tsx';
+import type { iTodoItem, typeFilter } from '../types/types.tsx';
 import { v4 as uuidv4 } from 'uuid';
 
 const STORAGE_TODO_LIST = 'STORAGE_TODO_LIST';
@@ -43,7 +43,7 @@ const todoMoveToTrash = function (id: string, todoList: iTodoItem[]): iTodoItem[
     return _list;
 };
 
-const todoMaskAsImportant = function (recordId: string, _group: string, todoList: iTodoItem[]): iTodoItem[] {
+const todoMaskAsImportant = function (recordId: string, _group: typeFilter = '', todoList: iTodoItem[]): iTodoItem[] {
     const _list: iTodoItem[] = todoList.map((record) => {
         return record.id === recordId ? { ...record, ...{ group: _group } } : record;
     });
